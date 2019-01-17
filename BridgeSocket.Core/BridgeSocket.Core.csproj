@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <PackageVersion>0.0.1</PackageVersion>
+        <Title>BridgeSocket.Core</Title>
+        <Authors>zhshize</Authors>
+        <Description>BridgeSocket is an socket.io-like real time library.</Description>
+        <Copyright>Apache License, Version 2.0</Copyright>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MessagePack" Version="1.7.3.4" />
+      <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
+    </ItemGroup>
+
+</Project>
