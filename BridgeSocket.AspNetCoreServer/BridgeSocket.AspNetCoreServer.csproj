@@ -2,8 +2,18 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
-        <AssemblyName>BridgeSocket.AspNetCoreServer</AssemblyName>
-        <RootNamespace>BridgeSocket.AspNetCoreServer</RootNamespace>
+
+        <PackageId>BridgeSocket.AspNetCoreServer</PackageId>
+        <PackageVersion>0.0.1-beta</PackageVersion>
+        <Title>BridgeSocket.AspNetCoreServer</Title>
+        <Authors>zhshize</Authors>
+        <Description>BridgeSocket is an socket.io-like real time library.</Description>
+        <Copyright>Apache License, Version 2.0</Copyright>
+        <PackageProjectUrl>https://github.com/zhshize/BridgeSocket</PackageProjectUrl>
+        <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/zhshize/BridgeSocket.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>0.0.1-beta</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
