@@ -65,6 +65,9 @@ public class Startup
                 respond("hi");
             });
         };
+        
+        app.UseWebSockets(WsOptions);
+        app.UseBridgeSocket(manager);
     }
 }
 ```
