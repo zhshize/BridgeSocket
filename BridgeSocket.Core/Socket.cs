@@ -33,6 +33,8 @@ namespace BridgeSocket.Core
         private bool _reading;
         private INamespace _nsp;
         private int _callBackIdRandomLength = 8;
+        
+        private CancellationTokenSource _cancellation = new CancellationTokenSource();
 
         /// <summary>
         /// Construct a socket.
@@ -218,6 +220,8 @@ namespace BridgeSocket.Core
             string statusDescription = "")
         {
             OnDisconnecting?.Invoke(closeStatus, statusDescription);
+            _reading = false;
+            _cancellation.Cancel();
             await RawSocket.CloseAsync(closeStatus, statusDescription, CancellationToken.None);
             OnDisconnect?.Invoke(closeStatus, statusDescription);
         }
@@ -236,7 +240,7 @@ namespace BridgeSocket.Core
                 WebSocketReceiveResult result;
                 do
                 {
-                    result = await RawSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    result = await RawSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellation.Token);
                 } while (!result.EndOfMessage);
 
                 while (!result.CloseStatus.HasValue && _reading)
@@ -249,7 +253,7 @@ namespace BridgeSocket.Core
 
                     do
                     {
-                        result = await RawSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                        result = await RawSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellation.Token);
                     } while (!result.EndOfMessage);
                 }
 
@@ -282,7 +286,7 @@ namespace BridgeSocket.Core
                     {
                         var sendBuffer = new ArraySegment<Byte>(message, 0, message.Length);
                         await RawSocket.SendAsync(sendBuffer, WebSocketMessageType.Binary, true,
-                            CancellationToken.None);
+                            _cancellation.Token);
                     }
                     else
                     {
