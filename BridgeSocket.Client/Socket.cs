@@ -1,5 +1,4 @@
 using System.Net.WebSockets;
-using BridgeSocket.Core;
 
 
 namespace BridgeSocket.Client

@@ -9,10 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeSocket.AspNetCoreServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BridgeSocket.Client", "BridgeSocket.Client\BridgeSocket.Client.csproj", "{8AA63118-5754-4636-9F8B-9333405E0CCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{98CB2B25-2490-43C4-818E-7E1B77C3879C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{5DB93FB6-4F13-41FD-8D96-244153C14A9D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,29 +58,5 @@ Global
 		{8AA63118-5754-4636-9F8B-9333405E0CCE}.Release|x64.Build.0 = Release|Any CPU
 		{8AA63118-5754-4636-9F8B-9333405E0CCE}.Release|x86.ActiveCfg = Release|Any CPU
 		{8AA63118-5754-4636-9F8B-9333405E0CCE}.Release|x86.Build.0 = Release|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Debug|x64.Build.0 = Debug|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Debug|x86.Build.0 = Debug|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Release|x64.ActiveCfg = Release|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Release|x64.Build.0 = Release|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Release|x86.ActiveCfg = Release|Any CPU
-		{98CB2B25-2490-43C4-818E-7E1B77C3879C}.Release|x86.Build.0 = Release|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Debug|x64.Build.0 = Debug|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Debug|x86.Build.0 = Debug|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Release|x64.ActiveCfg = Release|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Release|x64.Build.0 = Release|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Release|x86.ActiveCfg = Release|Any CPU
-		{5DB93FB6-4F13-41FD-8D96-244153C14A9D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

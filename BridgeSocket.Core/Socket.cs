@@ -18,7 +18,7 @@ namespace BridgeSocket.Core
     /// </summary>
     public class Socket : ISocket
     {
-        public WebSocket RawSocket { get; }
+        public virtual WebSocket RawSocket { get; set; }
         public string Id { get; private set; }
         public event Action<WebSocketCloseStatus, string> OnDisconnecting;
         public event Action<WebSocketCloseStatus, string> OnDisconnect;
@@ -33,8 +33,8 @@ namespace BridgeSocket.Core
         private bool _reading;
         private INamespace _nsp;
         private int _callBackIdRandomLength = 8;
-        
-        private CancellationTokenSource _cancellation = new CancellationTokenSource();
+
+        private readonly CancellationTokenSource _cancellation = new CancellationTokenSource();
 
         /// <summary>
         /// Construct a socket.
@@ -212,7 +212,7 @@ namespace BridgeSocket.Core
         public void Disconnect(WebSocketCloseStatus closeStatus = WebSocketCloseStatus.NormalClosure,
             string statusDescription = "")
         {
-            var unused = DisconnectAsync(closeStatus, statusDescription);
+            DisconnectAsync(closeStatus, statusDescription).Wait();
         }
 
         public async Task DisconnectAsync(
@@ -222,7 +222,14 @@ namespace BridgeSocket.Core
             OnDisconnecting?.Invoke(closeStatus, statusDescription);
             _reading = false;
             _cancellation.Cancel();
-            await RawSocket.CloseAsync(closeStatus, statusDescription, CancellationToken.None);
+            try
+            {
+                await RawSocket.CloseAsync(closeStatus, statusDescription, CancellationToken.None);
+            }
+            catch (Exception)
+            {
+                // Exit normally
+            }
             OnDisconnect?.Invoke(closeStatus, statusDescription);
         }
 
@@ -233,43 +240,65 @@ namespace BridgeSocket.Core
 
             var send = Task.Run(StartSend);
 
-            var buffer = new byte[_bufferSize];
-
+            WebSocketReceiveResult closeResult = null;
             try
             {
-                WebSocketReceiveResult result;
-                do
+                while (!_cancellation.IsCancellationRequested)
                 {
-                    result = await RawSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellation.Token);
-                } while (!result.EndOfMessage);
-
-                while (!result.CloseStatus.HasValue && _reading)
-                {
-                    if (result.MessageType == WebSocketMessageType.Binary)
+                    try
                     {
-                        var memStream = new MemoryStream(buffer, 0, result.Count);
-                        HandleMessage(memStream);
+                        var (result, message) = await ReceiveFullMessage();
+                        if (result.MessageType == WebSocketMessageType.Binary)
+                        {
+                            var array = message.ToArray();
+                            var memStream = new MemoryStream(array, 0, array.Length);
+                            HandleMessage(memStream);
+                        }
+
+                        if (result.MessageType == WebSocketMessageType.Close)
+                        {
+                            closeResult = result;
+                            break;
+                        }
                     }
-
-                    do
+                    catch (OperationCanceledException)
                     {
-                        result = await RawSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellation.Token);
-                    } while (!result.EndOfMessage);
+                        // Exit normally
+                    }
                 }
-
                 _reading = false;
-
                 await send;
 
                 WebSocketCloseStatus closeStatus = WebSocketCloseStatus.NormalClosure;
-                if (result.CloseStatus != null) closeStatus = (WebSocketCloseStatus) result.CloseStatus;
-                await DisconnectAsync(closeStatus, result.CloseStatusDescription);
+                if (closeResult?.CloseStatus != null) closeStatus = (WebSocketCloseStatus) closeResult.CloseStatus;
+                await DisconnectAsync(closeStatus, closeResult?.CloseStatusDescription);
             }
-            catch (WebSocketException)
+            catch (WebSocketException e) when (e.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
             {
-                RawSocket.Dispose();
-                OnDisconnect?.Invoke(WebSocketCloseStatus.InternalServerError, "");
+                OnDisconnect?.Invoke(WebSocketCloseStatus.ProtocolError, "ConnectionClosedPrematurely");
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("RECV ERR");
+                Console.WriteLine(e);
+                /*Disconnect();
+                RawSocket.Dispose();*/
+            }
+        }
+
+        private async Task<(WebSocketReceiveResult, IEnumerable<byte>)> ReceiveFullMessage()
+        {
+            WebSocketReceiveResult response;
+            var message = new List<byte>();
+
+            var buffer = new byte[4096];
+            do
+            {
+                response = await RawSocket.ReceiveAsync(new ArraySegment<byte>(buffer), _cancellation.Token);
+                message.AddRange(new ArraySegment<byte>(buffer, 0, response.Count));
+            } while (!response.EndOfMessage);
+
+            return (response, message);
         }
 
         /// <summary>
@@ -280,24 +309,41 @@ namespace BridgeSocket.Core
         {
             try
             {
-                while (_reading)
+                while (!_cancellation.IsCancellationRequested)
                 {
                     if (SendQueue.TryDequeue(out var message))
                     {
                         var sendBuffer = new ArraySegment<Byte>(message, 0, message.Length);
-                        await RawSocket.SendAsync(sendBuffer, WebSocketMessageType.Binary, true,
-                            _cancellation.Token);
+                        try
+                        {
+                            await RawSocket.SendAsync(sendBuffer, WebSocketMessageType.Binary, true,
+                                _cancellation.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            // Exit normally
+                        }
                     }
                     else
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(10));
+                        await Task.Delay(TimeSpan.FromMilliseconds(20));
                     }
                 }
             }
-            catch (WebSocketException)
+            catch (WebSocketException e) when (e.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
             {
-                RawSocket.Dispose();
-                OnDisconnect?.Invoke(WebSocketCloseStatus.InternalServerError, "");
+                OnDisconnect?.Invoke(WebSocketCloseStatus.ProtocolError, "ConnectionClosedPrematurely");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SEND ERR");
+                Console.WriteLine(e);
+                /*Disconnect();
+                RawSocket.Dispose();*/
+            }
+            finally
+            {
+                _cancellation.Cancel();
             }
         }
 

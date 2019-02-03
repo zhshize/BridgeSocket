@@ -35,7 +35,7 @@ namespace BridgeSocket.Core
             {
                 foreach (var socket in Sockets)
                 {
-                    socket.Emit<TSent, TReturned>(name, data, ack);
+                    socket.Emit(name, data, ack);
                 }
             }
         }

@@ -4,7 +4,7 @@
         <TargetFramework>netcoreapp2.2</TargetFramework>
         
         <PackageId>BridgeSocket.Core</PackageId>
-        <PackageVersion>0.0.2</PackageVersion>
+        <PackageVersion>0.0.3</PackageVersion>
         <Title>BridgeSocket.Core</Title>
         <Authors>zhshize</Authors>
         <Description>BridgeSocket is an socket.io-like real time library.</Description>
@@ -13,7 +13,7 @@
         <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/zhshize/BridgeSocket.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>0.0.2</PackageTags>
+        <PackageTags>0.0.4</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
