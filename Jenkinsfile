@@ -6,5 +6,10 @@ pipeline {
         sh 'dotnet build'
       }
     }
+    stage('pack') {
+      steps {
+        sh 'dotnet pack'
+      }
+    }
   }
 }
